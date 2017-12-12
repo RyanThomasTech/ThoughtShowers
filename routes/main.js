@@ -84,7 +84,7 @@ router.get('/signup',function(req, res) {
 });
 
 router.post('/signup', function(req, res, next) {
-  client.query('SELECT * FROM examusers WHERE username = $1', [req.body.username], function(err, result) {
+  client.query('SELECT * FROM users WHERE username = $1', [req.body.username], function(err, result) {
       if (err) {
         console.log("unable to query SELECT");
         next(err);
