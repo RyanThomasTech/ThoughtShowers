@@ -1,0 +1,26 @@
+<form method="post" action="/main/signup">
+<div style = "float:left; width: 200px;">username</div>
+<input type="text" name="username" placeholder="username"><br>
+
+<div style = "float:left; width: 200px;">Password</div>
+<input type="password" name="password" placeholder="Password"><br>
+
+<div style = "float:left; width: 200px;">email</div>
+<input type="password" name="email" placeholder="email@address.extension"><br>
+
+<br><div style = "float:left; width: 200px;">&nbsp;</div>
+<input type="submit" value="Signup">
+</form>
+
+<br> <a href="/main/login">Back to Login</a><br>
+{{#if exist}}
+<h3 style="color:red;">Username is taken</h3>
+{{/if}}
+
+{{#if success}}
+<h3 style="color:green;">User created</h3>
+{{/if}}
+
+{{#if emptyFields}}
+<h3 style="color:red;">One or more fields are missing. Please try again.</h3>
+{{/if}}

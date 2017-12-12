@@ -74,4 +74,49 @@ router.post('/newPost',function(req, res, next) {
   });
 });
 
+function encryptPWD(password){
+    var salt = bcrypt.genSaltSync(10);
+    return bcrypt.hashSync(password, salt);
+}
+
+router.get('/signup',function(req, res) {
+    res.render('signup', { user: req.user }); // signup.hbs
+});
+
+router.post('/signup', function(req, res, next) {
+  client.query('SELECT * FROM examusers WHERE username = $1', [req.body.username], function(err, result) {
+      if (err) {
+        console.log("unable to query SELECT");
+        next(err);
+      }
+      if (result.rows.length > 0) {
+        res.render('signup',      {exist: true,
+                                  success: false,
+                                  emptyFields: false});
+      }
+      else{
+          if(req.body.username && req.body.password){
+              var hashedPWD = encryptPWD(req.body.password);
+              client.query('INSERT INTO users (username, password, usertype) VALUES($1, $2, $3)', [req.body.username, hashedPWD , 'user'], function(err, result) {
+                  if (err) {
+                    console.log("unable to query INSERT");
+                    next(err);
+                  }
+                  else{
+                    //console.log("created user with un: " + req.body.username + " pw: " + req.body.password + " isAdmin: " + req.body.usertype);
+                    res.render('signup',      {exist: false,
+                                              success: true,
+                                              emptyFields: false});
+                  }
+              });
+          }
+          else{
+              res.render('signup',      {exist: false,
+                                        success: false,
+                                        emptyFields: true});
+          }
+      }
+    });
+});
+
 module.exports = router;
