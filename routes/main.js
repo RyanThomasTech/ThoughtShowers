@@ -58,7 +58,7 @@ router.get('/user',loggedIn,function(req, res, next){
 });
 
 router.get('/newPost',function(req, res, next) {
-  res.render('newPost', {user: req.user, error: req.flash('error')});
+  res.render('newPost', {error: req.flash('error')});
 });
 
 router.post('/newPost',function(req, res, next) {
