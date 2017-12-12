@@ -56,3 +56,5 @@ router.get('/user',loggedIn,function(req, res, next){
     }
   });
 });
+
+module.exports = router;
