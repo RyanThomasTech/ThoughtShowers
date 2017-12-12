@@ -57,4 +57,20 @@ router.get('/user',loggedIn,function(req, res, next){
   });
 });
 
+router.get('/newPost',function(req, res, next) {
+  res.render('newPost', {user: req.user, error: req.flash('error')});
+});
+
+router.post('/newPost',function(req, res, next) {
+  client.query('INSERT INTO posts(title, body, author) VALUES($1,$2,$3)', [req.body.title, req.body.body, user.username], function(err, result) {
+    if (err) {
+      console.log("unable to query INSERT");
+      next(err);
+    }
+    else{
+      res.redirect('/main/user');
+    }
+  });
+});
+
 module.exports = router;

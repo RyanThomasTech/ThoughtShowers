@@ -3,11 +3,11 @@
     {{#if rows}}
       <table id="myTable">
         <thead>
-        <tr><th>ID</th><th>Username</th><th>Description</th></tr>
+        <tr><th>Author</th><th>Post Title</th></tr>
       </thead>
       <tbody>
       {{#each rows}}
-        <tr><td> {{ username }}</td>
+        <tr><td> {{ author }}</td>
             <td> {{ title }}</td>
         </tr>
       {{/each}}
@@ -17,6 +17,7 @@
     {{else}}
       <h3 style="color:red;">No posts</h3>
     {{/if}}
+    <a href="/main/newPost">Start a new storm</a><br>
     <a href="/main/logout">Log out</a><br>
 
     <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
