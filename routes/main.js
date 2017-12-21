@@ -58,7 +58,7 @@ function getAuthorID(username, callback) {
 router.get('/user',loggedIn,function(req, res, next){
 
   //var authorID = getAuthorID(req.user.username);
-  getAuthorID(req.user.username, function(authorID){
+  getAuthorID(req.user.username, function(){
     client.query('SELECT * FROM thread WHERE user_account_id=$1',[authorID], function(err,result){
       if (err) {
         console.log("main.js: sql error ");
