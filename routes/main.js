@@ -50,7 +50,7 @@ function getAuthorID(username) {
     }
     else{
       console.log("found user id " + result.rows[0].id + " for user " + username);
-      return result.rows.id;
+      return result.rows[0].id;
     }
   });
   return authorID;
@@ -82,7 +82,7 @@ router.post('/newThread',function(req, res, next) {
       next(err);
     }
     else{
-      console.log("query successful, redirecting");
+      console.log("successful insert by user id " + authorID + ", redirecting");
       res.redirect('/main/user');
     }
   });
