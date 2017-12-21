@@ -43,13 +43,13 @@ function loggedIn(req, res, next) {
 }
 
 function getAuthorID(username) {
-  var authorID = client.query('SELECT id FROM user_account WHERE username=$1',[username], function(err, result){
+  var authorID = client.query('SELECT * FROM user_account WHERE username=$1',[username], function(err, result){
     if (err) {
       console.log("unable to query SELECT");
       next(err);
     }
     else{
-      console.log("found user id " + result.rows.id + " for user " + username);
+      console.log("found user id " + result.rows[0].id + " for user " + username);
       return result.rows.id;
     }
   });
