@@ -41,7 +41,7 @@ passport.use(new LocalStrategy({
         return done(null,false, {message: 'OOPS! sql error'});
       }
       if (result.rows.length > 0) {
-        var matched = bcrypt.compareSync(password, result.rows[0].password);
+        var matched = bcrypt.compareSync(password, result.rows[0].hashed_password);
         if (matched) {
           console.log("Successful login, ", result.rows[0]);
           return done(null, result.rows[0]);
