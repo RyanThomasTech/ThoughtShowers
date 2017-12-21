@@ -88,7 +88,7 @@ router.get('/user',loggedIn,function(req, res, next){
 });
 
 router.get('/answerPage',function(req, res, next) {
-  getPostID(req.body.topic, function(err, threadID){
+  getPostID(req.rows[0].topic, function(err, threadID){
     if (err) console.log(err);
     client.query('SELECT * FROM post WHERE thread_id=$1',[threadID], function( err, result){
       if (err) {
