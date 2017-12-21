@@ -17,9 +17,7 @@ router.get('/', function(req, res, next) {
 
 });
 
-router.post('/',
-  // depends on the fiels "isAdmin", redirect to the different path: admin or notAdmin
-  passport.authenticate('local', { failureRedirect: '/main', failureFlash:true }),
+router.post('/', passport.authenticate('local', { failureRedirect: '/main', failureFlash:true }),
   function(req, res,next) {
 
     /*if (req.user.usertype == 'admin'){
@@ -33,7 +31,7 @@ router.post('/',
 
 router.get('/logout', function(req, res){
     req.logout(); //passport provide it
-    res.redirect('/main'); 
+    res.redirect('/main');
 });
 
 function loggedIn(req, res, next) {
