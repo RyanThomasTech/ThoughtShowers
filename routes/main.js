@@ -42,8 +42,8 @@ function loggedIn(req, res, next) {
   }
 }
 
-function getPostID(threadID, callback) {
-  client.query('SELECT * FROM post WHERE thread_id=$1',[threadID], function(err, result){
+function getPostID(topic, callback) {
+  client.query('SELECT * FROM post WHERE topic=$1',[topic], function(err, result){
     if (err) {
       console.log("unable to query SELECT");
       next(err);
@@ -87,7 +87,7 @@ router.get('/user',loggedIn,function(req, res, next){
 });
 
 router.get('/answerPage',function(req, res, next) {
-  getPostID(req.rows.thread_id, function(err, threadID){
+  getPostID(req.body.topic, function(err, threadID){
     if (err) console.log(err);
     client.query('SELECT * FROM post WHERE thread_id=$1',[threadID], function( err, result){
       if (err) {

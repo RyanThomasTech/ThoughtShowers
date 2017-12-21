@@ -2,12 +2,12 @@
 {{#if rows}}
   <table id="myTable">
     <thead>
-    <tr><th>Author</th><th>Post Title</th></tr>
+    <tr><th>Post Title</th></tr>
   </thead>
   <tbody>
   {{#each rows}}
     <tr>
-        <td> {{ topic }}</td>
+        <td> <a href="/main/answerPage">{{ topic }}</a></td>
     </tr>
   {{/each}}
   </tbody>
