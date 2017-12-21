@@ -52,6 +52,7 @@ function getAuthorID(username) {
     else{
       var authorID = result.rows[0].id;
       console.log("found user id " + authorID + "(supposed to be " + result.rows[0].id + ") for user " + username);
+      return authorID;
     }
   });
   return authorID;
