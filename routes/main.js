@@ -42,7 +42,7 @@ function loggedIn(req, res, next) {
   }
 }
 
-function getAuthorID(username) {
+function getAuthorID(username, callback) {
   client.query('SELECT * FROM user_account WHERE username=$1',[username], function(err, result){
     if (err) {
       console.log("unable to query SELECT");
@@ -51,6 +51,7 @@ function getAuthorID(username) {
     else{
       var authorID = result.rows[0].id;
       console.log("found user id " + authorID + "(supposed to be " + result.rows[0].id + ") for user " + username);
+      callback();
     }
   });
 }
@@ -59,22 +60,18 @@ router.get('/user',loggedIn,function(req, res, next){
 
   //var authorID = getAuthorID(req.user.username);
   getAuthorID(req.user.username, function(err, authorID){
-    if (err) {
-      console.log(err);
-    }
-    else{
-      console.log("making select query");
-      client.query('SELECT * FROM thread WHERE user_account_id=$1',[authorID], function(err,result){
-        if (err) {
-          console.log("main.js: sql error ");
-          next(err); // throw error to error.hbs.
-        }
-        else {
-          console.log("select query successful");
-          res.render('user', {rows: result.rows, user: req.user} );
-        }
-      });
-    }
+    if (err) console.log(err);
+    console.log("making select query");
+    client.query('SELECT * FROM thread WHERE user_account_id=$1',[authorID], function(err,result){
+      if (err) {
+        console.log("main.js: sql error ");
+        next(err); // throw error to error.hbs.
+      }
+      else {
+        console.log("select query successful");
+        res.render('user', {rows: result.rows, user: req.user} );
+      }
+    });
   });
 });
 
