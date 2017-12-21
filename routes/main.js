@@ -61,14 +61,12 @@ router.get('/user',loggedIn,function(req, res, next){
   //var authorID = getAuthorID(req.user.username);
   getAuthorID(req.user.username, function(err, authorID){
     if (err) console.log(err);
-    console.log("making select query");
     client.query('SELECT * FROM thread WHERE user_account_id=$1',[authorID], function(err,result){
       if (err) {
         console.log("main.js: sql error ");
         next(err); // throw error to error.hbs.
       }
       else {
-        console.log("select query successful");
         res.render('user', {rows: result.rows, user: req.user} );
       }
     });
@@ -80,17 +78,20 @@ router.get('/newThread',function(req, res, next) {
 });
 
 router.post('/newThread',function(req, res, next) {
-  var authorID = getAuthorID(req.user.username);
-  console.log("making insert with " + req.user.username + " and id:" + authorID );
-  client.query('INSERT INTO thread(topic, created, user_account_id) VALUES($1,CURRENT_TIMESTAMP,$2)', [req.body.topic, authorID], function(err, result) {
-    if (err) {
-      console.log("unable to query INSERT");
-      next(err);
-    }
-    else{
-      console.log("successful insert by user id " + authorID + ", redirecting");
-      res.redirect('/main/user');
-    }
+  //var authorID = getAuthorID(req.user.username);
+  getAuthorID(req.user.username, function(err, authorID){
+    if (err) console.log(err);
+    console.log("making insert with " + req.user.username + " and id:" + authorID );
+    client.query('INSERT INTO thread(topic, created, user_account_id) VALUES($1,CURRENT_TIMESTAMP,$2)', [req.body.topic, authorID], function(err, result) {
+      if (err) {
+        console.log("unable to query INSERT");
+        next(err);
+      }
+      else{
+        console.log("successful insert by user id " + authorID + ", redirecting");
+        res.redirect('/main/user');
+      }
+    });
   });
 });
 
