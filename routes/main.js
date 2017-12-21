@@ -42,8 +42,7 @@ function loggedIn(req, res, next) {
   }
 }
 
-function getAuthorID(username) {
-  //var authorID = -1;
+function getAuthorID(username, callback) {
   client.query('SELECT * FROM user_account WHERE username=$1',[username], function(err, result){
     if (err) {
       console.log("unable to query SELECT");
@@ -52,23 +51,23 @@ function getAuthorID(username) {
     else{
       var authorID = result.rows[0].id;
       console.log("found user id " + authorID + "(supposed to be " + result.rows[0].id + ") for user " + username);
-      return authorID;
     }
   });
-  //return authorID;
 }
 
 router.get('/user',loggedIn,function(req, res, next){
 
-  var authorID = getAuthorID(req.user.username);
-  client.query('SELECT * FROM thread WHERE user_account_id=$1',[authorID], function(err,result){
-    if (err) {
-      console.log("main.js: sql error ");
-      next(err); // throw error to error.hbs.
-    }
-    else {
-      res.render('user', {rows: result.rows, user: req.user} );
-    }
+  //var authorID = getAuthorID(req.user.username);
+  getAuthorID(req.user.username, function(authorID){
+    client.query('SELECT * FROM thread WHERE user_account_id=$1',[authorID], function(err,result){
+      if (err) {
+        console.log("main.js: sql error ");
+        next(err); // throw error to error.hbs.
+      }
+      else {
+        res.render('user', {rows: result.rows, user: req.user} );
+      }
+    });
   });
 });
 
@@ -77,17 +76,19 @@ router.get('/newThread',function(req, res, next) {
 });
 
 router.post('/newThread',function(req, res, next) {
-  var authorID = getAuthorID(req.user.username);
-  console.log("making insert with " + req.user.username + " and id:" + authorID );
-  client.query('INSERT INTO thread(topic, created, user_account_id) VALUES($1,CURRENT_TIMESTAMP,$2)', [req.body.topic, authorID], function(err, result) {
-    if (err) {
-      console.log("unable to query INSERT");
-      next(err);
-    }
-    else{
-      console.log("successful insert by user id " + authorID + ", redirecting");
-      res.redirect('/main/user');
-    }
+  //var authorID = getAuthorID(req.user.username);
+  getAuthorID(req.user.username, function(authorID){
+    console.log("making insert with " + req.user.username + " and id:" + authorID );
+    client.query('INSERT INTO thread(topic, created, user_account_id) VALUES($1,CURRENT_TIMESTAMP,$2)', [req.body.topic, authorID], function(err, result) {
+      if (err) {
+        console.log("unable to query INSERT");
+        next(err);
+      }
+      else{
+        console.log("successful insert by user id " + authorID + ", redirecting");
+        res.redirect('/main/user');
+      }
+    });
   });
 });
 
