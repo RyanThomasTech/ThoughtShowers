@@ -43,6 +43,7 @@ function loggedIn(req, res, next) {
 }
 
 function getPostID(topic, callback) {
+  console.log(topic);
   client.query('SELECT * FROM post WHERE topic=$1',[topic], function(err, result){
     if (err) {
       console.log("unable to query SELECT");
