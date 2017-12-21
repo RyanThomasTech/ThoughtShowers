@@ -77,7 +77,7 @@ router.get('/newThread',function(req, res, next) {
 
 router.post('/newThread',function(req, res, next) {
   var authorID = getAuthorID(req.user.username);
-  client.query('INSERT INTO thread(topic, user_account_id) VALUES($1,$2)', [req.body.topic, authorID], function(err, result) {
+  client.query('INSERT INTO thread(topic, created, user_account_id) VALUES($1,GETDATE(),$2)', [req.body.topic, authorID], function(err, result) {
     if (err) {
       console.log("unable to query INSERT");
       next(err);
