@@ -63,12 +63,14 @@ router.get('/user',loggedIn,function(req, res, next){
       console.log(err);
     }
     else{
+      console.log("making select query");
       client.query('SELECT * FROM thread WHERE user_account_id=$1',[authorID], function(err,result){
         if (err) {
           console.log("main.js: sql error ");
           next(err); // throw error to error.hbs.
         }
         else {
+          console.log("select query successful");
           res.render('user', {rows: result.rows, user: req.user} );
         }
       });
