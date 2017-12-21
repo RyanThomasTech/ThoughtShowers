@@ -42,7 +42,7 @@ function loggedIn(req, res, next) {
   }
 }
 
-function getAuthorID(username, callback) {
+function getAuthorID(username) {
   client.query('SELECT * FROM user_account WHERE username=$1',[username], function(err, result){
     if (err) {
       console.log("unable to query SELECT");
