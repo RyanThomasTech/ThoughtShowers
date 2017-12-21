@@ -33,7 +33,7 @@ router.post('/',
 
 router.get('/logout', function(req, res){
     req.logout(); //passport provide it
-    res.redirect('/main'); // Successful. redirect to localhost:3000/exam
+    res.redirect('/main'); 
 });
 
 function loggedIn(req, res, next) {
@@ -44,9 +44,24 @@ function loggedIn(req, res, next) {
   }
 }
 
+function getAuthorID(username) {
+  var authorID = client.query('SELECT id FROM user_account WHERE username=$1',[username], function(err, result){
+    if (err) {
+      console.log("unable to query SELECT");
+      next(err);
+    }
+    else{
+      console.log("found user id " + id + " for user " + username);
+      return id;
+    }
+  });
+  return authorID;
+}
+
 router.get('/user',loggedIn,function(req, res, next){
 
-  client.query('SELECT * FROM posts WHERE author=$1',[req.user.username], function(err,result){
+  var authorID = getAuthorID(req.user.username);
+  client.query('SELECT * FROM thread WHERE user_account_id=$1',[authorID], function(err,result){
     if (err) {
       console.log("main.js: sql error ");
       next(err); // throw error to error.hbs.
@@ -57,12 +72,13 @@ router.get('/user',loggedIn,function(req, res, next){
   });
 });
 
-router.get('/newPost',function(req, res, next) {
-  res.render('newPost', {user: req.user , error: req.flash('error')});
+router.get('/newThread',function(req, res, next) {
+  res.render('newThread', {user: req.user , error: req.flash('error')});
 });
 
-router.post('/newPost',function(req, res, next) {
-  client.query('INSERT INTO posts(title, body, author) VALUES($1,$2,$3)', [req.body.title, req.body.body, req.user.username], function(err, result) {
+router.post('/newThread',function(req, res, next) {
+  var authorID = getAuthorID(req.user.username);
+  client.query('INSERT INTO post(topic, user_account_id) VALUES($1,$2)', [req.body.topic, authorID], function(err, result) {
     if (err) {
       console.log("unable to query INSERT");
       next(err);
@@ -84,7 +100,7 @@ router.get('/signup',function(req, res) {
 });
 
 router.post('/signup', function(req, res, next) {
-  client.query('SELECT * FROM users WHERE username = $1', [req.body.username], function(err, result) {
+  client.query('SELECT * FROM user_account WHERE username = $1', [req.body.username], function(err, result) {
       if (err) {
         console.log("unable to query SELECT");
         next(err);
@@ -97,7 +113,9 @@ router.post('/signup', function(req, res, next) {
       else{
           if(req.body.username && req.body.password){
               var hashedPWD = encryptPWD(req.body.password);
-              client.query('INSERT INTO users (username, password, usertype) VALUES($1, $2, $3)', [req.body.username, hashedPWD , 'user'], function(err, result) {
+              //TODO: timestamp on account creation
+              //TODO: email registration process
+              client.query('INSERT INTO user_account (username, hashed_password, name, email) VALUES($1, $2, $3, $4)', [req.body.username, hashedPWD , req.body.name, req.body.email], function(err, result) {
                   if (err) {
                     console.log("unable to query INSERT");
                     next(err);
