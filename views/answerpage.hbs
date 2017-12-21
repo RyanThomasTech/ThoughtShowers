@@ -35,31 +35,33 @@
 <div class="container-fluid text-center">
   <div class="row content">
     <div class="col-sm-4 sidenav">
-      <p>[Topic HERE]</p>
-
+      <table id="questiontable">
+        <thead>
+        <tr><th>Question:</th></tr>
+      </thead>
+      <tbody>
+      {{#each rows}}
+        <tr>
+            <td>{{ topic }}</td>
+        </tr>
+      {{/each}}
+      </tbody>
+    </table> <br><hr>
     </div>
+
+    
     <div class="col-sm-8 text-left">
-      <h1>Thought Showers puoring!</h1>
-      <h3>Answer 1</h3>
-      <p>{[ANSWER 1 HERE]}</p>
-      <hr>
-      <h3>Answer 2</h3>
-      <p>[ANSWER 2 HERE]</p>
-      <hr>
-      <h3>Answer 3</h3>
-      <p>[ANSWER 3 HERE]</p>
-      <hr>
-      <h3>Answer 4</h3>
-      <p>[ANSWER 4 HERE]</p>
-      <hr>
-      <h3>Answer 5</h3>
-      <p>[ANSWER 5 HERE]</p>
-      <hr>
-      <h3>Answer 6</h3>
-      <p>[ANSWER 6 HERE]</p>
-      <hr>
-      <h3>Answer 7</h3>
-      <p>[ANSWER 7 HERE]</p>
+    <table id="answertable">
+      <thead></thead>
+      <tbody>
+        {{#each post_rows}}
+          <tr>
+              <td>{{content}}</td><hr>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+
     </div>
   </div>
 </div>

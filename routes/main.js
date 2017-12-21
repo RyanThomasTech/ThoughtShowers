@@ -42,6 +42,19 @@ function loggedIn(req, res, next) {
   }
 }
 
+function getPostID(threadID, callback) {
+  client.query('SELECT * FROM post WHERE thread_id=$1',[threadID], function(err, result){
+    if (err) {
+      console.log("unable to query SELECT");
+      next(err);
+    }
+    else{
+      var postID = result.rows[0].thread_id;
+      callback(err, postID);
+    }
+  });
+}
+
 function getAuthorID(username, callback) {
   client.query('SELECT * FROM user_account WHERE username=$1',[username], function(err, result){
     if (err) {
@@ -71,6 +84,23 @@ router.get('/user',loggedIn,function(req, res, next){
       }
     });
   });
+});
+
+router.get('/answerPage',function(req, res, next) {
+  getPostID(req.rows.thread_id, function(err, threadID){
+    if (err) console.log(err);
+    client.query('SELECT * FROM post WHERE thread_id=$1',[threadID], function( err, result){
+      if (err) {
+        console.log("main.js: sql error ");
+        next(err); // throw error to error.hbs.
+      }
+      else {
+        res.render('answerPage', {post_rows: result.rows, user: req.user} );
+      }
+    });
+  });
+
+  res.render('answerPage', {user: req.user , error: req.flash('error')});
 });
 
 function makeid() {
