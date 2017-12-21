@@ -26,7 +26,7 @@ router.post('/', passport.authenticate('local', { failureRedirect: '/main', fail
     else {
       res.redirect('/exam/notAdmin');
     }*/
-    res.redirect('/main/user');
+    res.redirect('/main/hub');
 });
 
 router.get('/logout', function(req, res){
@@ -73,16 +73,27 @@ router.get('/user',loggedIn,function(req, res, next){
   });
 });
 
+function makeid() {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for (var i = 0; i < 5; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return text;
+}
+
 router.get('/newThread',function(req, res, next) {
   res.render('newThread', {user: req.user , error: req.flash('error')});
 });
 
 router.post('/newThread',function(req, res, next) {
   //var authorID = getAuthorID(req.user.username);
+  var stormcode = makeid();
   getAuthorID(req.user.username, function(err, authorID){
     if (err) console.log(err);
     console.log("making insert with " + req.user.username + " and id:" + authorID );
-    client.query('INSERT INTO thread(topic, created, user_account_id) VALUES($1,CURRENT_TIMESTAMP,$2)', [req.body.topic, authorID], function(err, result) {
+    client.query('INSERT INTO thread(topic, created, user_account_id, stormcode) VALUES($1,CURRENT_TIMESTAMP,$2,$3)', [req.body.topic, authorID, stormcode], function(err, result) {
       if (err) {
         console.log("unable to query INSERT");
         next(err);
@@ -92,6 +103,19 @@ router.post('/newThread',function(req, res, next) {
         res.redirect('/main/user');
       }
     });
+  });
+});
+
+router.get('/hub',function(req, res, next) {
+  //TODO: implement status to hide certain threads
+  client.query('SELECT * FROM thread', function(err, result){
+    if(err){
+      console.log("unable to query SELECT on thread");
+      next(err);
+    }
+    else{
+      res.render('hub', { rows: result.rows, user: req.user});
+    }
   });
 });
 

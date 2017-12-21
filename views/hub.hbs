@@ -1,0 +1,30 @@
+<h1> Welcome to the Hub </h1>
+{{#if rows}}
+  <table id="myTable">
+    <thead>
+    <tr><th>Author</th><th>Post Title</th></tr>
+  </thead>
+  <tbody>
+  {{#each rows}}
+    <tr>
+        <td> {{ topic }}</td>
+    </tr>
+  {{/each}}
+  </tbody>
+</table> <br><hr>
+
+{{else}}
+  <h3 style="color:red;">No posts</h3>
+{{/if}}
+<a href="/main/newThread">Start a new storm</a><br>
+<a href="/main/user">Back to your page</a><br><br>
+<a href="/main/logout">Log out</a><br>
+
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
+<script type="text/javascript" src="//code.jquery.com/jquery-1.12.4.js"></script>
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+<script>
+$(document).ready(function(){
+    $('#myTable').DataTable();
+});
+</script>
